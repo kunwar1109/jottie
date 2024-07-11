@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/provider/ThemeProvider";
 import { ConvextCleintProvider } from "@/components/provider/ConvexProvider";
 import { Toaster } from "sonner";
+import { ModalProvider } from "@/components/provider/ModalProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
             storageKey="jottie-theme"
           >
             <Toaster position="bottom-center" />
+            <ModalProvider />
             {children}
           </ThemeProvider>
         </ConvextCleintProvider>

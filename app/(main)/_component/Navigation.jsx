@@ -4,11 +4,13 @@ import { cn } from "@/lib/utils";
 import {
   ChevronsLeft,
   MenuIcon,
+  Plus,
   PlusCircle,
   Search,
   Settings,
+  Trash,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { UserItem } from "./UserItem";
@@ -17,15 +19,27 @@ import { api } from "@/convex/_generated/api";
 import { Item } from "./Item";
 import { toast } from "sonner";
 import { DocumentList } from "./DocumentList";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { TrashBox } from "./TrashBox";
+import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
+import { Navbar } from "./Navbar";
 
 export const Navigation = () => {
   const pathname = usePathname();
+  const params = useParams();
   const isMobile = useMediaQuery("(max-width:768px)");
   const isResizingRef = useRef(false);
   const sideBarRef = useRef(null);
   const navbarRef = useRef(null);
   const [isResetting, setIsResetting] = useState(false);
   const [collapsed, setIsCollapsed] = useState(isMobile);
+  const search = useSearch();
+  const settings = useSettings();
 
   const create = useMutation(api.document.create);
 
@@ -141,12 +155,24 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <Item label="Search" icon={Search} isSearch onClick={() => {}} />
-          <Item label="Settings" icon={Settings} onClick={() => {}} />
+          <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
+          <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
           <Item onClick={handleCreate} label="New Page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
           <DocumentList />
+          <Item label="Add a page" icon={Plus} onClick={handleCreate} />
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <Item label="Trash" icon={Trash} />
+            </PopoverTrigger>
+            <PopoverContent
+              side={isMobile ? "bottom" : "right"}
+              className="p-0 w-72"
+            >
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}
@@ -162,15 +188,19 @@ export const Navigation = () => {
           isMobile && "w-full left-0",
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {collapsed && (
-            <MenuIcon
-              role="button"
-              className="h-6 w-6 text-muted-foreground "
-              onClick={resetWidth}
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <Navbar collapsed={collapsed} resetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {collapsed && (
+              <MenuIcon
+                role="button"
+                className="h-6 w-6 text-muted-foreground "
+                onClick={resetWidth}
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
