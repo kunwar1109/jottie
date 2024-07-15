@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/provider/ThemeProvider";
 import { ConvextCleintProvider } from "@/components/provider/ConvexProvider";
 import { Toaster } from "sonner";
 import { ModalProvider } from "@/components/provider/ModalProvider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,17 +32,19 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ConvextCleintProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            storageKey="jottie-theme"
-          >
-            <Toaster position="bottom-center" />
-            <ModalProvider />
-            {children}
-          </ThemeProvider>
+          <EdgeStoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+              storageKey="jottie-theme"
+            >
+              <Toaster position="bottom-center" />
+              <ModalProvider />
+              {children}
+            </ThemeProvider>
+          </EdgeStoreProvider>
         </ConvextCleintProvider>
       </body>
     </html>
