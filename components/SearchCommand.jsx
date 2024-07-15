@@ -18,7 +18,6 @@ import { File } from "lucide-react";
 
 export const SearchCommand = () => {
   const { user } = useUser();
-  console.log(user);
   const router = useRouter();
   const documents = useQuery(api.document.getSearch);
 

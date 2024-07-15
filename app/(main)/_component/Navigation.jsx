@@ -28,6 +28,7 @@ import { TrashBox } from "./TrashBox";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
 import { Navbar } from "./Navbar";
+import { useRouter } from "next/navigation";
 
 export const Navigation = () => {
   const pathname = usePathname();
@@ -40,6 +41,7 @@ export const Navigation = () => {
   const [collapsed, setIsCollapsed] = useState(isMobile);
   const search = useSearch();
   const settings = useSettings();
+  const router = useRouter();
 
   const create = useMutation(api.document.create);
 
@@ -124,7 +126,7 @@ export const Navigation = () => {
   const handleCreate = () => {
     const promise = create({
       title: "Untitled",
-    });
+    }).then((documentId) => router.push(`/documents/${documentId}`));
 
     toast.promise(promise, {
       loading: "Creating new note...",
